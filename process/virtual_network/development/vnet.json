@@ -1,0 +1,174 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "regiao": {
+      "type": "string",
+      "defaultValue": "brs1"
+    },
+    "identificador": {
+      "type": "string",
+      "defaultValue": "001"
+    },
+    "iniciativa": {
+      "type": "string",
+      "defaultValue": "hub"
+    },
+    "adress_space": {
+      "type": "array",
+      "defaultValue": [
+        "10.132.0.0/18"
+      ]
+    }
+  },
+  "functions": [],
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "vnet",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "regiao": {
+            "value": "[parameters('regiao')]"
+          },
+          "addess_space": {
+            "value": "[parameters('adress_space')]"
+          },
+          "environment": {
+            "value": "dev"
+          },
+          "identificador": {
+            "value": "[parameters('identificador')]"
+          },
+          "iniciativa": {
+            "value": "[parameters('iniciativa')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "environment": {
+              "type": "string",
+              "allowedValues": [
+                "dev",
+                "qa",
+                "prd",
+                "sdx"
+              ]
+            },
+            "iniciativa": {
+              "type": "string"
+            },
+            "regiao": {
+              "type": "string"
+            },
+            "identificador": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "addess_space": {
+              "type": "array"
+            },
+            "enableDdosProtection": {
+              "type": "bool",
+              "defaultValue": true
+            },
+            "enableVmProtection": {
+              "type": "bool",
+              "defaultValue": true
+            }
+          },
+          "functions": [],
+          "variables": {
+            "vnet_name": "[format('cg-{0}-vnet-{1}-{2}-{3}', parameters('environment'), parameters('iniciativa'), parameters('regiao'), parameters('identificador'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2020-06-01",
+              "name": "[variables('vnet_name')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": "[parameters('addess_space')]"
+                },
+                "enableDdosProtection": "[parameters('enableDdosProtection')]",
+                "enableVmProtection": "[parameters('enableVmProtection')]"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "subnet",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "vnet_name": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.name]"
+          },
+          "subnet_name": {
+            "value": "teste"
+          },
+          "addess_prefix": {
+            "value": "10.132.0.0/22"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "vnet_name": {
+              "type": "string"
+            },
+            "subnet_name": {
+              "type": "string"
+            },
+            "addess_prefix": {
+              "type": "string"
+            }
+          },
+          "functions": [],
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2020-06-01",
+              "name": "[format('{0}/{1}', parameters('vnet_name'), parameters('subnet_name'))]",
+              "properties": {
+                "addressPrefix": "[parameters('addess_prefix')]",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
+      ]
+    }
+  ],
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.3.1.62928",
+      "templateHash": "7192309584169475133"
+    }
+  }
+}
