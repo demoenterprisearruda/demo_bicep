@@ -4,7 +4,8 @@ param identificador string
 param iniciativa string
 param regiao string
 param vnet_name string
-param gateway_type string 
+param gateway_type string
+param privateip_allocation_method string
 param vpn_sku string
 param vpn_type string
 
@@ -23,7 +24,7 @@ module vgw '../../modules/virtual_network/virtual_network_gateway.bicep' = {
     gateway_type: gateway_type
     identificador: identificador
     iniciativa: iniciativa
-    privateip_allocation_method: ip.outputs.publicip_allocation_method
+    privateip_allocation_method: privateip_allocation_method
     publicip_id: ip.outputs.publicip_id
     regiao: regiao
     vpn_sku: vpn_sku

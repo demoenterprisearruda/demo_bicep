@@ -22,13 +22,24 @@ param regiao string
 @description('ID numérico de 3 digitos que compôe o nome do recurso')
 param identificador string
 param location string = resourceGroup().location
-
+@allowed([
+  'Standard_LRS'
+])
 @description('SKU do Storage Account')
 param sku string
+@allowed([
+  'Standard'
+])
 @description('Tier do Storage Account')
 param tier string
+@allowed([
+  'StorageV2'
+])
 @description('Tipo do Storage Account')
 param kind string
+@allowed([
+  'Hot'
+])
 @description('Access Tier do Storage Account')
 param accessTier string
 
@@ -46,3 +57,6 @@ resource stg 'Microsoft.Storage/storageAccounts@2020-08-01-preview' = {
     accessTier: accessTier
   }
 }
+
+output storage_name string = stg.name
+output storage_id string = stg.id

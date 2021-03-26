@@ -29,8 +29,9 @@ param location string = resourceGroup().location
 ])
 @description('Tipo da VPN')
 param vpn_type string
+
 @allowed([
-  'VPN'
+  'Vpn'
   'ExpressRoute'
 ])
 @description('Tipo de Gateway')
@@ -40,6 +41,9 @@ param gateway_type string
 ])
 @description('SKU da VPN')
 param vpn_sku string
+@allowed([
+  'Dynamic'
+])
 @description('Metodo de alocação de IP')
 param privateip_allocation_method string
 @description('ID do IP Publico')
@@ -48,7 +52,7 @@ param publicip_id string
 param vnet_name string
 
 var network_name = 'cg-${environment}-vgw-${iniciativa}-${regiao}-${identificador}'
-var subnet_id = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks', vnet_name,'subnets/GatewaySubnet') 
+var subnet_id = resourceId('Microsoft.Network/virtualNetworks/subnets', vnet_name,'GatewaySubnet') 
 
 
 resource netgateway 'Microsoft.Network/virtualNetworkGateways@2020-06-01' = {
