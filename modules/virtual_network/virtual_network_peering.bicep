@@ -1,5 +1,8 @@
+@description('Nome da Vnet')
 param VnetName string
+@description('Nome da Vnet remota')
 param remoteVnetName string
+@description('Resource Group da Vnet remota')
 param remoteVnetRg string
 
 resource peering 'microsoft.network/virtualNetworks/virtualNetworkPeerings@2020-05-01' = {
