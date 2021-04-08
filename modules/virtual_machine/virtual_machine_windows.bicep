@@ -32,10 +32,10 @@ param windows_os string = '2016-Datacenter'
   'Standard_D8s_v4'
 ])
 @description('Tamanho da VM')
-param vm_size string = 'Standard_F2'
+param vm_size string = 'Standard_D8s_v4'
 
 param guid string = newGuid()
-var vm_password = 'p${uniqueString(resourceGroup().id, deployment().name, guid)}'
+var vm_password = 'p${uniqueString(resourceGroup().id, deployment().name, guid)}@89'
 
 var vm_name = 'cg${environment}${iniciativa}${identificador}'
 
@@ -67,7 +67,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
         {
           lun: 0
           name: '${vm_name}_DataDisk_0_${uniqueString(resourceGroup().id, deployment().name, guid)}'
-          createOption: 'Attach'
+          createOption: 'Empty'
           caching: 'ReadWrite'
           writeAcceleratorEnabled: false
           managedDisk: {
@@ -95,7 +95,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       }
       secrets: []
       allowExtensionOperations: true
-      requireGuestProvisionSignal: true
+      //requireGuestProvisionSignal: true
     }
     networkProfile: {
       networkInterfaces: [

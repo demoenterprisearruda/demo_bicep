@@ -30,7 +30,7 @@ param identificador string = '001'
   'Standard_D8s_v4'
 ])
 @description('Tamanho da VM')
-param vm_size string = 'Standard_F2'
+param vm_size string = 'Standard_D8s_v4'
 
 @allowed([
   '2008-R2-SP1'
