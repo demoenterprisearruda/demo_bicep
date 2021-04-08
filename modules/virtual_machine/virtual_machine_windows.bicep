@@ -29,6 +29,7 @@ param windows_os string = '2016-Datacenter'
 
 @allowed([
   'Standard_F2'
+  'Standard_D8s_v4'
 ])
 @description('Tamanho da VM')
 param vm_size string = 'Standard_F2'
@@ -37,6 +38,7 @@ param guid string = newGuid()
 var vm_password = 'p${uniqueString(resourceGroup().id, deployment().name, guid)}'
 
 var vm_name = 'cg${environment}${iniciativa}${identificador}'
+
 resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   name: vm_name
   location: location
@@ -53,9 +55,29 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       }
       osDisk: {
         osType: 'Windows'
+        name: '${vm_name}_${uniqueString(resourceGroup().id, deployment().name, guid)}'
         createOption: 'FromImage'
+        caching:'ReadWrite'
+        diskSizeGB: 127
+        managedDisk:{
+          storageAccountType: 'Premium_LRS'
+        }
       }
-      dataDisks: []
+      dataDisks: [
+        {
+          lun: 0
+          name: '${vm_name}_DataDisk_0_${uniqueString(resourceGroup().id, deployment().name, guid)}'
+          createOption: 'Attach'
+          caching: 'ReadWrite'
+          writeAcceleratorEnabled: false
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+          }
+          diskSizeGB: 512
+          toBeDetached: false
+        }
+
+      ]
     }
     osProfile: {
       computerName: vm_name
@@ -94,4 +116,5 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   }
 }
 
-output password string = vm_password
+output vm_name string = vm_name
+output vm_password string = vm_password

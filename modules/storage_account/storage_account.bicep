@@ -60,3 +60,5 @@ resource stg 'Microsoft.Storage/storageAccounts@2020-08-01-preview' = {
 
 output storage_name string = stg.name
 output storage_id string = stg.id
+output storage_connectionstring string = 'DefaultEndpointsProtocol=https;AccountName=${stg.name};AccountKey=${listKeys(stg.id, '2019-06-01').keys[0].value}'
+output storage_accesskey string = listKeys(stg.id, '2019-06-01').keys[0].value
