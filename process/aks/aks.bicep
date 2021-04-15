@@ -5,13 +5,13 @@
   'sdx'
 ])
 @description('Sigla do Ambiente onde o recurso está rodando')
-param environment string = 'dev'
+param environment string = 'prd'
 @allowed([
   'spk'
   'hub'
 ])
 @description('Sigla de 3 digitos que identifica a iniciativa do recurso')
-param iniciativa string = 'spk'
+param iniciativa string = 'hub'
 @allowed([
   'use2'
   'brs1'
@@ -27,6 +27,14 @@ param spn_client_id string = '2fc798b5-66bb-4ec5-927f-b12d053d4cd4'
 @secure()
 param spn_client_secret string = 'Aqon_QA.hPTTw9owYqf_GKo8SMoRoX~Z6A'
 
+module ip '../../modules/virtual_network/public_ip_prefix.bicep' = {
+  name: 'publicip'
+  params:{
+    environment: environment
+    identificador: '999'
+  }
+}
+
 module aks '../../modules/aks/aks_cluster.bicep' = {
   name: 'aks'
   params:{
@@ -37,7 +45,11 @@ module aks '../../modules/aks/aks_cluster.bicep' = {
     spn_client_id: spn_client_id
     spn_client_secret: spn_client_secret
     vnet_name: vnet_name
+    public_ip_id: ip.outputs.public_ip_prefix_id
   }
+  dependsOn:[
+    ip
+  ]
 }
 
 module aks_pool '../../modules/aks/aks_agentpool.bicep' = {
