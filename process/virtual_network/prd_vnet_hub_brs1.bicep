@@ -154,3 +154,15 @@ module subnet11 '../../modules/virtual_network/subnet.bicep' = {
   }
 }
 
+//Peering with cg-prd-vnet-spk-brs1-001
+module peering1 '../../modules/virtual_network/virtual_network_peering.bicep' = {
+  name: 'peering_cg-prd-vnet-spk-brs1-001'
+  dependsOn:[
+    subnet11
+  ]
+  params:{
+    remoteVnetName: 'cg-prd-vnet-spk-brs1-001'
+    remoteVnetRg: 'cg-prd-rg-network-brs1'
+    VnetName: virtual_network.outputs.vnet_name
+  }
+}

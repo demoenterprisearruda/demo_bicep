@@ -17,3 +17,16 @@ resource peering 'microsoft.network/virtualNetworks/virtualNetworkPeerings@2020-
     }
   }
 }
+
+resource rev_peering 'microsoft.network/virtualNetworks/virtualNetworkPeerings@2020-05-01' = {
+  name: '${remoteVnetName}/peering-${remoteVnetName}-to-${VnetName}'
+  properties: {
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    allowGatewayTransit: true
+    useRemoteGateways: false
+    remoteVirtualNetwork: {
+      id: resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks', VnetName)
+    }
+  }
+}

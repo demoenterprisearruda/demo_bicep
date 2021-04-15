@@ -141,3 +141,42 @@ module subnet10 '../../modules/virtual_network/subnet.bicep' = {
     addess_prefix: '10.130.36.0/22'
   }
 }
+
+//Peering with cg-dev-vnet-spk-use2-001
+module peering1 '../../modules/virtual_network/virtual_network_peering.bicep' = {
+  name: 'peering_cg-dev-vnet-spk-use2-001'
+  params:{
+    remoteVnetName: 'cg-dev-vnet-spk-use2-001'
+    remoteVnetRg: 'cg-dev-rg-network-use2'
+    VnetName: virtual_network.outputs.vnet_name
+  }
+  dependsOn:[
+    subnet10
+  ]
+}
+
+//Peering with cg-prd-vnet-spk-use2-001
+module peering2 '../../modules/virtual_network/virtual_network_peering.bicep' = {
+  name: 'peering_cg-prd-vnet-spk-use2-001'
+  params:{
+    remoteVnetName: 'cg-prd-vnet-spk-use2-001'
+    remoteVnetRg: 'cg-prd-rg-network-use2'
+    VnetName: virtual_network.outputs.vnet_name
+  }
+  dependsOn:[
+    peering1
+  ]
+}
+
+//Peering with cg-qa-vnet-spk-use2-001
+module peering3 '../../modules/virtual_network/virtual_network_peering.bicep' = {
+  name: 'peering_cg-qa-vnet-spk-use2-001'
+  params:{
+    remoteVnetName: 'cg-qa-vnet-spk-use2-001'
+    remoteVnetRg: 'cg-qa-rg-network-use2'
+    VnetName: virtual_network.outputs.vnet_name
+  }
+  dependsOn:[
+    peering2
+  ]
+}

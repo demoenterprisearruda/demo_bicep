@@ -28,7 +28,6 @@ param network_interface_id string
 param windows_os string = '2016-Datacenter'
 
 @allowed([
-  'Standard_F2'
   'Standard_D8s_v4'
 ])
 @description('Tamanho da VM')

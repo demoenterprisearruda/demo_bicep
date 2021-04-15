@@ -1,13 +1,53 @@
-
+@allowed([
+  'dev'
+  'qa'
+  'prd'
+  'sdx'
+])
+@description('Sigla do Ambiente onde o recurso está rodando')
 param environment string
-param identificador string
+@allowed([
+  'spk'
+  'hub'
+])
+@description('Sigla de 3 digitos que identifica a iniciativa do recurso')
 param iniciativa string
+@allowed([
+  'use2'
+  'brs1'
+  'usc1'
+])
+@description('Sigla de 3 digitos que identifica a região do recurso')
 param regiao string
-param vnet_name string
-param gateway_type string
-param privateip_allocation_method string
-param vpn_sku string
+@description('ID numérico de 3 digitos que compôe o nome do recurso')
+param identificador string
+
+//resource param
+@allowed([
+  'RouteBased'
+])
+@description('Tipo da VPN')
 param vpn_type string
+
+@allowed([
+  'Vpn'
+  'ExpressRoute'
+])
+@description('Tipo de Gateway')
+param gateway_type string
+@allowed([
+  'VpnGw1'
+])
+@description('SKU da VPN')
+param vpn_sku string
+@allowed([
+  'Dynamic'
+])
+@description('Metodo de alocação de IP')
+param privateip_allocation_method string
+
+@description('Nome da vNet')
+param vnet_name string
 
 module ip '../../modules/virtual_network/public_ip.bicep' = {
   name: 'public-ip'

@@ -6,13 +6,12 @@
 ])
 @description('Sigla do Ambiente onde o recurso está rodando')
 param environment string
-
 @allowed([
   'spk'
   'hub'
 ])
 @description('Sigla de 3 digitos que identifica a iniciativa do recurso')
-param iniciativa string 
+param iniciativa string
 
 @allowed([
   'use2'
@@ -23,21 +22,26 @@ param iniciativa string
 param regiao string 
 
 @description('ID numérico de 3 digitos que compôe o nome do recurso')
-param identificador string 
+param identificador string
+
+@description('ID da interface de rede')
+param network_interface_id string
+
+@allowed([
+  '12.04.5-LTS'
+  '14.04.5-LTS'
+  '16.04.0-LTS'
+  '18.04-LTS'
+])
+param ubuntu_os string = '18.04-LTS'
 
 @allowed([
   'Standard_D8s_v4'
 ])
 @description('Tamanho da VM')
-param vm_size string 
+param vm_size string = 'Standard_D8s_v4'
 
-@allowed([
-  '2008-R2-SP1'
-  '2016-Datacenter'
-  '2019-Datacenter'
-])
-@description('Imagem Windows Utilizada')
-param vm_os string 
+param vm_ssh_key string
 
 param vnet_name string 
 param vnet_subnet string 
@@ -56,27 +60,15 @@ module nic '../../modules/virtual_network/virtual_network_interface.bicep' = {
   }
 }
 
-module vm '../../modules/virtual_machine/virtual_machine_windows.bicep' = {
+module vm '../../modules/virtual_machine/virtual_machine_linux.bicep' = {
   name: 'vm'
   params:{
     environment: environment
     identificador: identificador
     iniciativa: iniciativa
+    network_interface_id: nic.outputs.nic_id
+    ubuntu_os: ubuntu_os
     vm_size: vm_size
-    windows_os: vm_os
-    network_interface_id: nic.outputs.nic_id  
+    vm_ssh_key: vm_ssh_key
   }
-  dependsOn:[
-    nic
-  ]
-}
-
-module vm_extension '../../modules/virtual_machine/extensions/azure_network_watcher_windows.bicep' = {
-  name: 'vm_extension'
-  params:{
-    vm_name: vm.outputs.vm_name
-  }
-  dependsOn: [
-    vm
-  ]
 }
