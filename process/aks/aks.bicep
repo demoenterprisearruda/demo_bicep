@@ -5,33 +5,33 @@
   'sdx'
 ])
 @description('Sigla do Ambiente onde o recurso está rodando')
-param environment string = 'prd'
+param environment string 
 @allowed([
   'spk'
   'hub'
 ])
 @description('Sigla de 3 digitos que identifica a iniciativa do recurso')
-param iniciativa string = 'hub'
+param iniciativa string 
 @allowed([
   'use2'
   'brs1'
   'usc1'
 ])
 @description('Sigla de 3 digitos que identifica a região do recurso')
-param regiao string = 'brs1'
+param regiao string 
 @description('ID numérico de 3 digitos que compôe o nome do recurso')
-param identificador string = '999'
-param vnet_name string = 'cg-prd-vnet-hub-brs1-001'
+param identificador string 
+param vnet_name string 
 
-param spn_client_id string = '2fc798b5-66bb-4ec5-927f-b12d053d4cd4'
+param spn_client_id string
 @secure()
-param spn_client_secret string = 'Aqon_QA.hPTTw9owYqf_GKo8SMoRoX~Z6A'
+param spn_client_secret string
 
 module ip '../../modules/virtual_network/public_ip_prefix.bicep' = {
   name: 'publicip'
   params:{
     environment: environment
-    identificador: '999'
+    identificador: identificador
   }
 }
 

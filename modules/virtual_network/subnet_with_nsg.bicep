@@ -5,8 +5,6 @@ param subnet_name string
 @description('Prefixo de Rede da Subnet')
 param addess_prefix string
 
-param nsg_id string
-
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' = {
   name: '${vnet_name}/${subnet_name}'
   properties: {
@@ -14,8 +12,5 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' = {
     delegations: []
     privateEndpointNetworkPolicies: 'Enabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroup: {
-      id: nsg_id
-    }
   }
 }
